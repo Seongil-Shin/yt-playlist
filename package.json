@@ -1,30 +1,52 @@
 {
   "name": "yt-playlist",
-  "version": "1.0.0",
-  "description": "forkie player의 크롬 extension 버전",
-  "main": "manifest.json",
-  "scripts": {
-    "build": "webpack --config webpack.config.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Seongil-Shin/yt-playlist.git"
-  },
-  "author": "Seongil-Shin",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Seongil-Shin/yt-playlist/issues"
-  },
-  "homepage": "https://github.com/Seongil-Shin/yt-playlist#readme",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "chrome-types": "^0.1.171"
+    "@types/node": "^16.18.12",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "npm-watch": "^0.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src",
+        "public"
+      ],
+      "extensions": "*",
+      "runOnChangeOnly": true
+    }
+  },
+  "scripts": {
+    "start": "npm-watch",
+    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^11.0.0",
-    "html-webpack-plugin": "^5.5.0",
-    "ts-loader": "^9.4.2",
-    "typescript": "^4.9.5",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "tailwindcss": "^3.2.7"
   }
 }
