@@ -7,6 +7,10 @@ module.exports = {
       import: path.resolve(__dirname, "src/background.ts"),
       filename: "background.js",
     },
+    content: {
+      import: path.resolve(__dirname, "src/content.ts"),
+      filename: "content.js",
+    },
   },
   output: {
     path: path.join(__dirname, "./build"),
