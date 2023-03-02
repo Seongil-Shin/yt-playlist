@@ -6,7 +6,7 @@
   "icons": {
     "128": "logo192.png"
   },
-  "permissions": ["tabs", "activeTab"],
+  "permissions": ["tabs", "activeTab", "storage"],
   "action": {
     "default_icon": "logo192.png",
     "default_popup": "index.html"
@@ -21,11 +21,23 @@
     }
   ],
   "commands": {
-    "save_playlist": {
+    "save_video": {
       "suggested_key": {
         "default": "Ctrl+Shift+S"
       },
+      "description": "Save Video"
+    },
+    "run_playlist": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+P"
+      },
       "description": "Run playlist"
+    },
+    "clear_playlist": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Z"
+      },
+      "description": "Clear playlist"
     }
   }
 }
