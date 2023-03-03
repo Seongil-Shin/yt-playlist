@@ -4,11 +4,11 @@ module.exports = {
   mode: "production",
   entry: {
     background: {
-      import: path.resolve(__dirname, "src/background.ts"),
+      import: path.resolve(__dirname, "src/background/background.ts"),
       filename: "background.js",
     },
     content: {
-      import: path.resolve(__dirname, "src/content.ts"),
+      import: path.resolve(__dirname, "src/content/content.ts"),
       filename: "content.js",
     },
   },

@@ -1,6 +1,6 @@
 export async function saveVideo(videoId: string, currentTime: number) {
     const playlist = await getPlaylist();
-    const newPlaylist = [...playlist, "https://www.youtube.com/watch?v=" + videoId + "&t=" + currentTime];
+    const newPlaylist = [...playlist, "https://www.youtube.com/watch?v=" + videoId + "&t=" + Math.floor(currentTime)];
     chrome.storage.local.set({ playlist: newPlaylist });
 }
 

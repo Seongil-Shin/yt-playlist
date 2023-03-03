@@ -1,4 +1,5 @@
-import {getPlaylist, saveVideo} from "./utils/playlistStorage";
+import {getPlaylist, saveVideo} from "../utils/playlistStorage";
+import runPlaylist from "./runPlaylist";
 
 chrome.commands.onCommand.addListener(async function (command) {
   const queryOptions = {active: true, lastFocusedWindow: true};
@@ -15,13 +16,12 @@ chrome.commands.onCommand.addListener(async function (command) {
   switch(command) {
     case "save_video":
       const videoId = tab.url.split('v=')[1].split('&')[0];
-      chrome.tabs.sendMessage(tab.id, "save_video", {}, (response) => {
+      chrome.tabs.sendMessage(tab.id, {message:"save_video"}, {}, (response) => {
         saveVideo(videoId, response.currentTime);
       })
       break;
     case "run_playlist":
-      const playlist = await getPlaylist();
-      console.log(playlist)
+      runPlaylist(tab.id);
       break;
     case "clear_playlist":
       chrome.storage.local.set({ playlist: [] });
