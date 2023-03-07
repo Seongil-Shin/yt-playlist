@@ -1,33 +1,33 @@
-import {getPlaylist} from "../utils/playlistStorage";
+import {getPlaylists} from "../utils/playlistStorage";
 
 interface Props {
-    tabId : number
+    tabId: number
 }
 
 interface PlaylistState {
-    isRunning : boolean,
+    isRunning: boolean,
     intervalId: NodeJS.Timer | null
 
     toggleIsRunning: Function
     setIntervalId: Function
 }
 
-const playlistState : PlaylistState = {
-    isRunning : false,
+const playlistState: PlaylistState = {
+    isRunning: false,
     intervalId: null,
 
     toggleIsRunning() {
         this.isRunning = !this.isRunning
     },
-    setIntervalId(id:NodeJS.Timer | null) {
+    setIntervalId(id: NodeJS.Timer | null) {
         this.intervalId = id;
     }
 }
-export default async function runPlaylist(tabId :number) {
+export default async function runPlaylist(tabId: number) {
     playlistState.toggleIsRunning();
 
-    if(playlistState.isRunning === false) {
-        if(playlistState.intervalId !== null) {
+    if (playlistState.isRunning === false) {
+        if (playlistState.intervalId !== null) {
             clearInterval(playlistState.intervalId);
         }
         playlistState.setIntervalId(null);
@@ -35,10 +35,9 @@ export default async function runPlaylist(tabId :number) {
     }
 
 
-    const playlist = await getPlaylist();
-    console.log(playlist)
+    const playlists = await getPlaylists();
 
-    if(playlist.length === 0) {
+    if (playlists.length === 0) {
         return;
     }
 
@@ -46,31 +45,30 @@ export default async function runPlaylist(tabId :number) {
 
     // 첫번째 비디오 재생
     chrome.tabs.update(tabId, {
-        url: playlist[idx++]
+        url: playlists[0].playlist[idx++]
     })
 
 
     const intervalId = setInterval(() => {
         chrome.tabs.sendMessage(tabId, {
-            message:"check_video_end",
+            message: "check_video_end",
             prevTime: prevTime
         }, {}, (res) => {
-            if(res.isEnded) {
-                if(idx === playlist.length) {
+            if (res.isEnded) {
+                if (idx === playlists[0].playlist.length) {
                     clearInterval(intervalId);
                     playlistState.setIntervalId(null);
                     return;
                 }
                 chrome.tabs.update(tabId, {
-                    url: playlist[idx++]
+                    url: playlists[0].playlist[idx++]
                 })
                 prevTime = 0;
-                console.log(playlist[idx])
             } else {
                 prevTime = res.currentTime;
             }
         })
-    },1000)
+    }, 1000)
 
     playlistState.setIntervalId(intervalId);
 }
