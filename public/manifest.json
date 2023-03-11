@@ -6,7 +6,11 @@
   "icons": {
     "128": "logo192.png"
   },
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage"
+  ],
   "action": {
     "default_icon": "logo192.png",
     "default_popup": "index.html"
@@ -14,25 +18,17 @@
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts":[
+  "content_scripts": [
     {
-      "matches" : ["https://*.youtube.com/watch*"],
-      "js": ["content.js"]
+      "matches": [
+        "https://*.youtube.com/watch*"
+      ],
+      "js": [
+        "content.js"
+      ]
     }
   ],
   "commands": {
-    "save_video": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+S"
-      },
-      "description": "Save Video"
-    },
-    "run_playlist": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+P"
-      },
-      "description": "Run playlist"
-    },
     "clear_playlist": {
       "suggested_key": {
         "default": "Ctrl+Shift+Z"

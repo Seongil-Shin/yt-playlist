@@ -13,10 +13,6 @@ chrome.commands.onCommand.addListener(async function (command) {
     }
 
     switch (command) {
-        case "save_video":
-            break;
-        case "run_playlist":
-            break;
         case "clear_playlist":
             chrome.storage.local.set({playlists: []});
             break;
