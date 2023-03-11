@@ -1,5 +1,12 @@
-export default function makeVideoAdditionButton() {
-    createVideoButton()
+import {saveVideo} from "../utils/playlistStorage";
+import * as yt from "../utils/youtube"
+
+export default function makeVideoAdditionButton(playlistId: number) {
+    const addVideoButton = createVideoButton()
+    addVideoButton.addEventListener("click", async function (e) {
+        const videoId = document.location.href.split('v=')[1].split('&')[0];
+        await saveVideo(playlistId, videoId, yt.getCurrentTime())
+    })
 }
 
 function createVideoButton() {
@@ -28,4 +35,5 @@ function createVideoButton() {
     })
 
     document.body.appendChild(htmlDivElement)
+    return htmlDivElement;
 }

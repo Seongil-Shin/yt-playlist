@@ -37,7 +37,7 @@ export default function Playlists() {
                             <div key={item.id}
                                  className="border-4 border-gray-300 border-[1px] h-12 w-full px-2 text-base leading-[3rem] box-border rounded-md hover:bg-slate-100 cursor-pointer"
                                  onClick={() => onClickPlaylist(item)}>
-                                {"새 재생목록"}
+                                {"새 재생목록 " + item.id}
                             </div>
                         )
                     })

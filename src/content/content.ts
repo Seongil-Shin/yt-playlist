@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
             break;
         case "add_video_button":
-            makeVideoAdditionButton()
+            makeVideoAdditionButton(message.data.playlistId)
     }
 });
 

@@ -6,13 +6,22 @@ export interface IVideo {
 
 export interface IPlaylist {
     id: number;
-    playlist: string[]
+    videos: string[]
 }
 
-export async function saveVideo(videoId: string, currentTime: number) {
-    const playlist = await getPlaylists();
-    const newPlaylist = [...playlist, "https://www.youtube.com/watch?v=" + videoId + "&t=" + Math.floor(currentTime)];
+export async function saveVideo(playlistId: number, videoId: string, currentTime: number) {
+    const playlists = await getPlaylists();
+    const newPlaylist = playlists.map((playlist) => {
+        if (playlist.id === playlistId) {
+            return {
+                ...playlist,
+                videos: [...playlist.videos, "https://www.youtube.com/watch?v=" + videoId + "&t=" + Math.floor(currentTime)]
+            }
+        }
+        return playlist;
+    })
     chrome.storage.local.set({playlists: newPlaylist});
+    console.log(newPlaylist)
 }
 
 export async function addPlaylist() {
@@ -25,7 +34,7 @@ export async function addPlaylist() {
     }, 0)
     const newPlaylist = [...playlist, {
         id: maxId + 1,
-        playlist: []
+        videos: []
     }]
 
     console.log(newPlaylist)
@@ -40,8 +49,5 @@ export async function getPlaylists() {
     if (playlists.playlists === undefined) {
         return [];
     }
-
-    console.log(playlists)
-
-    return Object.keys(playlists).length === 0 ? [] : playlists.playlists
+    return playlists.playlists
 }

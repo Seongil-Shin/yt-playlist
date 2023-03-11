@@ -1,5 +1,3 @@
-import {getPlaylists} from "../utils/playlistStorage";
-
 interface Props {
     tabId: number
 }
@@ -23,7 +21,7 @@ const playlistState: PlaylistState = {
         this.intervalId = id;
     }
 }
-export default async function runPlaylist(tabId: number) {
+export default async function runPlaylist(tabId: number, videos: string[]) {
     playlistState.toggleIsRunning();
 
     if (playlistState.isRunning === false) {
@@ -34,10 +32,7 @@ export default async function runPlaylist(tabId: number) {
         return;
     }
 
-
-    const playlists = await getPlaylists();
-
-    if (playlists.length === 0) {
+    if (videos.length === 0) {
         return;
     }
 
@@ -45,7 +40,7 @@ export default async function runPlaylist(tabId: number) {
 
     // 첫번째 비디오 재생
     chrome.tabs.update(tabId, {
-        url: playlists[0].playlist[idx++]
+        url: videos[idx++]
     })
 
 
@@ -55,13 +50,13 @@ export default async function runPlaylist(tabId: number) {
             prevTime: prevTime
         }, {}, (res) => {
             if (res.isEnded) {
-                if (idx === playlists[0].playlist.length) {
+                if (idx === videos.length) {
                     clearInterval(intervalId);
                     playlistState.setIntervalId(null);
                     return;
                 }
                 chrome.tabs.update(tabId, {
-                    url: playlists[0].playlist[idx++]
+                    url: videos[idx++]
                 })
                 prevTime = 0;
             } else {
