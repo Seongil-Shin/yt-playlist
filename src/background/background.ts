@@ -1,17 +1,6 @@
 import runPlaylist from "./runPlaylist";
 
-chrome.commands.onCommand.addListener(async function (command) {
-    const queryOptions = {active: true, lastFocusedWindow: true};
-    // `tab` will either be a `tabs.Tab` instance or `undefined`.
-    const [tab] = await chrome.tabs.query(queryOptions);
-
-    if (!tab?.url?.startsWith('https://www.youtube.com/watch') && !tab?.url?.startsWith('http://www.youtube.com/watch')) {
-        return;
-    }
-    if (tab.id === undefined) {
-        return;
-    }
-
+chrome.commands.onCommand.addListener(function (command) {
     switch (command) {
         case "clear_playlist":
             chrome.storage.local.set({playlists: []});

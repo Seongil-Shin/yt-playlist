@@ -1,4 +1,5 @@
 export interface IVideo {
+    id: number;
     thumbnail: string;
     title: string;
     startLink: string;
@@ -6,22 +7,50 @@ export interface IVideo {
 
 export interface IPlaylist {
     id: number;
-    videos: string[]
+    videos: IVideo[]
 }
 
-export async function saveVideo(playlistId: number, videoId: string, currentTime: number) {
+export async function saveVideo(playlistId: number, video: { videoId: string, currentTime: number, title: string, thumbnail: string }) {
     const playlists = await getPlaylists();
     const newPlaylist = playlists.map((playlist) => {
         if (playlist.id === playlistId) {
             return {
                 ...playlist,
-                videos: [...playlist.videos, "https://www.youtube.com/watch?v=" + videoId + "&t=" + Math.floor(currentTime)]
+                videos: [...playlist.videos, {
+                    id: Math.random() * 100000000000000000,
+                    startLink: "https://www.youtube.com/watch?v=" + video.videoId + "&t=" + Math.floor(video.currentTime),
+                    title: video.title,
+                    thumbnail: video.thumbnail
+                }]
             }
         }
         return playlist;
     })
-    chrome.storage.local.set({playlists: newPlaylist});
+
     console.log(newPlaylist)
+    return chrome.storage.local.set({playlists: newPlaylist}).then(() => {
+        return true
+    }).catch(() => {
+        return false
+    })
+}
+
+export async function removeVideo(playlistId: number, videoId: number) {
+    const playlists = await getPlaylists();
+    const newPlaylist = playlists.map((playlist) => {
+        if (playlist.id === playlistId) {
+            return {
+                ...playlist,
+                videos: playlist.videos.filter((video) => video.id !== videoId)
+            }
+        }
+        return playlist;
+    })
+    return chrome.storage.local.set({playlists: newPlaylist}).then(() => {
+        return true
+    }).catch(() => {
+        return false
+    })
 }
 
 export async function addPlaylist() {
@@ -36,8 +65,6 @@ export async function addPlaylist() {
         id: maxId + 1,
         videos: []
     }]
-
-    console.log(newPlaylist)
 
     chrome.storage.local.set({playlists: newPlaylist});
     return newPlaylist

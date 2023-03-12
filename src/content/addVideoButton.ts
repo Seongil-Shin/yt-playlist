@@ -1,11 +1,20 @@
 import {saveVideo} from "../utils/playlistStorage";
-import * as yt from "../utils/youtube"
+import {getCurrentTime} from "../utils/youtube";
 
 export default function makeVideoAdditionButton(playlistId: number) {
     const addVideoButton = createVideoButton()
+
     addVideoButton.addEventListener("click", async function (e) {
         const videoId = document.location.href.split('v=')[1].split('&')[0];
-        await saveVideo(playlistId, videoId, yt.getCurrentTime())
+        const title = document.title;
+        const thumbnail = document.head.querySelector("meta[property='og:image']")?.getAttribute("content") || "";
+
+        await saveVideo(playlistId, {
+            videoId: videoId,
+            currentTime: getCurrentTime(),
+            title: title,
+            thumbnail: thumbnail
+        })
     })
 }
 

@@ -1,21 +1,23 @@
 import React, {useEffect} from "react";
 import Navigation from "./Navigation";
 import Playlists from "./Playlists";
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import {useRecoilState, useSetRecoilState} from "recoil";
 import {isOnCurPlaylistState} from "../recoil/navigation";
 import CurPlaylist from "./CurPlaylist";
-import {tabIdState} from "../recoil/tab";
+import {currentPlaylistState} from "../recoil/playlists";
 
 export default function PopupApp() {
-    const isOnCurPlaylist = useRecoilValue(isOnCurPlaylistState)
-    const setTabId = useSetRecoilState(tabIdState);
+    const [isOnCurPlaylist, setIsOnCurPlaylist] = useRecoilState(isOnCurPlaylistState)
+    const setCurPlaylist = useSetRecoilState(currentPlaylistState)
 
     useEffect(() => {
-        const queryOptions = {active: true, lastFocusedWindow: true};
-        chrome.tabs.query(queryOptions).then(([tab]) => {
-            setTabId(tab.id);
-        });
+        async function initState() {
+            const playState = await chrome.storage.local.get({"playState": {isPlaying: false, curPlaylist: null}})
+            setIsOnCurPlaylist(playState.playState.isPlaying)
+            setCurPlaylist(playState.playState.curPlaylist)
+        }
 
+        initState()
     }, [])
 
     return (

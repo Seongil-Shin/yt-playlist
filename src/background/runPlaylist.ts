@@ -1,3 +1,5 @@
+import {IVideo} from "../utils/playlistStorage";
+
 interface Props {
     tabId: number
 }
@@ -21,7 +23,7 @@ const playlistState: PlaylistState = {
         this.intervalId = id;
     }
 }
-export default async function runPlaylist(tabId: number, videos: string[]) {
+export default async function runPlaylist(tabId: number, videos: IVideo[]) {
     playlistState.toggleIsRunning();
 
     if (playlistState.isRunning === false) {
@@ -39,8 +41,8 @@ export default async function runPlaylist(tabId: number, videos: string[]) {
     let idx = 0, prevTime = 0;
 
     // 첫번째 비디오 재생
-    chrome.tabs.update(tabId, {
-        url: videos[idx++]
+    await chrome.tabs.update(tabId, {
+        url: videos[idx++].startLink
     })
 
 
@@ -56,7 +58,7 @@ export default async function runPlaylist(tabId: number, videos: string[]) {
                     return;
                 }
                 chrome.tabs.update(tabId, {
-                    url: videos[idx++]
+                    url: videos[idx++].startLink
                 })
                 prevTime = 0;
             } else {

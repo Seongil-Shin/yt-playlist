@@ -11,6 +11,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         // 유저가 잠시 스탑한 거 구분
         case "check_video_end":
+            const isOnVideo = yt.isOnYoutubeVideo();
+            if (isOnVideo === false) {
+                sendResponse({
+                    isEnded: true,
+                })
+                return;
+            }
+
             const currentTime = yt.getCurrentTime()
             const endTime = yt.getEndTime();
             if (currentTime > endTime - 1 && currentTime === message.prevTime) {
