@@ -1,8 +1,10 @@
 import {useRecoilState, useSetRecoilState} from "recoil";
 import React, {useEffect} from "react";
-import {addPlaylist, getPlaylists, IPlaylist} from "../utils/playlistStorage";
+import {addPlaylist, getPlaylists, IPlaylist, removePlaylist} from "../utils/playlistStorage";
 import {currentPlaylistState, playlistsState} from "../recoil/playlists";
 import {isOnCurPlaylistState} from "../recoil/navigation";
+// @ts-ignore
+import DeleteIcon from "../assets/icons/delete.svg"
 
 export default function Playlists() {
     // 리코일로 연동
@@ -22,6 +24,18 @@ export default function Playlists() {
         setIsOnCurPlaylist(true)
     }
 
+    const onClickDeletePlaylist = async (e: React.MouseEvent<HTMLDivElement>, listId: number) => {
+        e.stopPropagation();
+        const newPlaylists = await removePlaylist(listId);
+        setPlaylists(newPlaylists);
+        setCurrentPlaylist(prev => {
+            if (prev?.id === listId) {
+                return null
+            }
+            return prev
+        })
+    }
+
     return (
         <>
             <div className="w-full h-12">
@@ -35,9 +49,13 @@ export default function Playlists() {
                     playlists.map((item) => {
                         return (
                             <div key={item.id}
-                                 className="border-4 border-gray-300 border-[1px] h-12 w-full px-2 text-base leading-[3rem] box-border rounded-md hover:bg-slate-100 cursor-pointer"
+                                 className="border-4 border-gray-300 border-[1px] h-12 w-full px-2 text-base leading-[3rem] box-border rounded-md hover:bg-slate-100 cursor-pointer flex flex-row justify-between items-center"
                                  onClick={() => onClickPlaylist(item)}>
-                                {"새 재생목록 " + item.id}
+                                <div>{item.title}</div>
+                                <div className="w-6 h-6 cursor-pointer z-50"
+                                     onClick={(e) => onClickDeletePlaylist(e, item.id)}>
+                                    <img
+                                        src={DeleteIcon}/></div>
                             </div>
                         )
                     })

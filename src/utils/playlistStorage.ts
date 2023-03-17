@@ -7,6 +7,7 @@ export interface IVideo {
 
 export interface IPlaylist {
     id: number;
+    title: string;
     videos: IVideo[]
 }
 
@@ -63,9 +64,33 @@ export async function addPlaylist() {
     }, 0)
     const newPlaylist = [...playlist, {
         id: maxId + 1,
+        title: "새 플레이리스트 " + (maxId + 1),
         videos: []
     }]
 
+    chrome.storage.local.set({playlists: newPlaylist});
+    return newPlaylist
+}
+
+export async function updatePlaylistTitle(id: number, title: string) {
+    const playlist = await getPlaylists();
+    const newPlaylist = playlist.map((playlist) => {
+        if (playlist.id === id) {
+            return {
+                ...playlist,
+                title
+            }
+        }
+        return playlist;
+    })
+
+    chrome.storage.local.set({playlists: newPlaylist});
+    return newPlaylist
+}
+
+export async function removePlaylist(id: number) {
+    const playlist = await getPlaylists();
+    const newPlaylist = playlist.filter((playlist) => playlist.id !== id)
     chrome.storage.local.set({playlists: newPlaylist});
     return newPlaylist
 }

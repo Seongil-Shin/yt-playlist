@@ -5,12 +5,14 @@ import {useEffect, useMemo, useState} from "react";
 
 // @ts-ignore
 import DeleteIcon from "../assets/icons/delete.svg"
-import {removeVideo} from "../utils/playlistStorage";
+import {removeVideo, updatePlaylistTitle} from "../utils/playlistStorage";
 import {getStartTimeFromURL} from "../utils/youtube";
 
 export default function CurPlaylist() {
     const [curPlaylist, setCurPlaylist] = useRecoilState(currentPlaylistState);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [newTitle, setNewTitle] = useState("");
 
     const playlistThumbnail = useMemo(() => {
         // first exist thumbnail
@@ -76,6 +78,33 @@ export default function CurPlaylist() {
         }
     }
 
+    const onClickEditTitle = () => {
+        if (isEditing) {
+            setNewTitle("")
+        }
+        setIsEditing(!isEditing)
+    }
+
+    const onInputTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewTitle(e.target.value)
+    }
+
+    const onClickSaveTitle = async () => {
+        if (curPlaylist === null) {
+            return;
+        }
+        if (newTitle === "") {
+            return;
+        }
+        await updatePlaylistTitle(curPlaylist.id, newTitle)
+        setCurPlaylist({
+            ...curPlaylist,
+            title: newTitle,
+        })
+        setIsEditing(false)
+    }
+
+
     return (
         <div className="w-full h-full">
             <div className="w-full h-1/4 flex p-2 box-border">
@@ -88,10 +117,20 @@ export default function CurPlaylist() {
                     }
                 </div>
                 <div className="w-2/3 h-full mx-2 flex flex-col justify-between">
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="text-xl font-bold">title</div>
+                    <div className="flex flex-row justify-between items-center">{
+                        isEditing ? <input type="text" className="w-full h-6 rounded-md border-b-2 border-b-black"
+                                           value={newTitle}
+                                           onInput={onInputTitle}/> :
+                            <div className="text-lg font-bold">{curPlaylist?.title}</div>}
+                        {isEditing &&
+                            <div
+                                className="w-12 h-6 cursor-pointer bg-gray-400 rounded-md text-white text-center leading-6 hover:bg-blue-400/80"
+                                onClick={onClickSaveTitle}>저장
+                            </div>
+                        }
                         <div
-                            className="w-12 h-6 cursor-pointer bg-gray-400 rounded-md text-white text-center leading-6 hover:bg-gray-400/80">수정
+                            className="w-12 h-6 cursor-pointer bg-gray-400 rounded-md text-white text-center leading-6 hover:bg-gray-400/80"
+                            onClick={onClickEditTitle}>{isEditing ? "취소" : "수정"}
                         </div>
                     </div>
                     <div className="w-full h-8 flex flex-row justify-around">
